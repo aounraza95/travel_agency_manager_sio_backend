@@ -17,7 +17,7 @@ Before you begin, ensure you have the following installed:
 Clone the project to your local machine:
 ```bash
 git clone https://github.com/aounraza95/travel_agency_manager_sio_backend.git
-cd travel_agency_api
+cd travel_agency_manager_sio_backend
 ```
 
 ### 2. Automated Setup (Recommended)

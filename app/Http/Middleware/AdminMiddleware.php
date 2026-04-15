@@ -16,7 +16,7 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         if (!auth()->check() || !auth()->user()->isAdmin()) {
-            return response()->json(['message' => 'Forbidden: Not autorized user.'], 403);
+            return response()->json(['message' => 'Forbidden: Not authorized user.'], 403);
         }
 
         return $next($request);
