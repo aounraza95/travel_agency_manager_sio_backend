@@ -9,7 +9,7 @@ Before you begin, ensure you have the following installed:
 - **Composer** (PHP dependency manager)
 - **Node.js & npm** (for frontend assets)
 - **MySQL** (Database server)
-- **API Docs** https://app.swaggerhub.com/apis/aounraza95organizati/TravelAgencyManager/1
+- **API Docs** https://app.swaggerhub.com/apis/aounraza95organizati/TravelAgencyManager/1.1
 
 ## Setup Steps
 

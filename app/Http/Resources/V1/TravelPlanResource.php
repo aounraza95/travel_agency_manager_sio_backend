@@ -23,7 +23,7 @@ class TravelPlanResource extends JsonResource
             'date_to' => $this->day_to->format('Y-m-d'),
             'is_active' => $this->is_active,
             'city' => new CityResource($this->whenLoaded('city')),
-            'activity' => new ActivityResource($this->whenLoaded('activity')),
+            'activity' => new ActivityResource($this->destinations->first()?->activity),
             'tourist_spots' => TouristSpotResource::collection($this->whenLoaded('touristSpots')),
             'destinations' => DestinationActivityResource::collection($this->whenLoaded('destinations')),
             'created_at' => $this->created_at->toDateTimeString(),
