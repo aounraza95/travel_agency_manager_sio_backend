@@ -14,7 +14,6 @@ class TravelPlanSeeder extends Seeder
     {
         // 1. Create Travel Plans
         $tokyoPlan = \App\Models\TravelPlan::create([
-            'activity_id' => 1,
             'city_id' => 1,
             'title' => 'Tokyo Explorer',
             'description' => 'A comprehensive 5-day journey through Tokyo\'s best spots.',
@@ -25,7 +24,6 @@ class TravelPlanSeeder extends Seeder
         ]);
 
         $parisPlan = \App\Models\TravelPlan::create([
-            'activity_id' => 3,
             'city_id' => 2,
             'title' => 'Paris Romance',
             'description' => 'A romantic 3-day getaway in the City of Lights.',
@@ -36,7 +34,6 @@ class TravelPlanSeeder extends Seeder
         ]);
 
         $dubaiPlan = \App\Models\TravelPlan::create([
-            'activity_id' => 2,
             'city_id' => 3,
             'title' => 'Dubai Luxury',
             'description' => 'Experience the luxury and desert adventures of Dubai.',

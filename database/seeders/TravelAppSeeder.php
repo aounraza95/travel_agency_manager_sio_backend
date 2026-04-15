@@ -10,7 +10,7 @@ use App\Models\ResidenceType;
 use App\Models\ResidenceLocation;
 use App\Models\TouristSpotType;
 use App\Models\TouristSpot;
-use App\Models\DestinationActivity;
+use App\Models\Destination;
 
 class TravelAppSeeder extends Seeder
 {
@@ -97,7 +97,7 @@ class TravelAppSeeder extends Seeder
         $fineDining = Activity::create(['activity_name' => 'Fine Dining', 'activity_code' => 'DIN', 'city_id' => $paris->id]);
 
         // 8. Destination Activities
-        DestinationActivity::create([
+        Destination::create([
             'activity_id' => $sightseeing->id,
             'activity_cost' => 5000,
             'reviews' => '5',
@@ -105,7 +105,7 @@ class TravelAppSeeder extends Seeder
             'best_months' => ['March', 'April', 'October', 'November'],
             'is_active' => true
         ]);
-        DestinationActivity::create([
+        Destination::create([
             'activity_id' => $shopping->id,
             'activity_cost' => 10000,
             'reviews' => '4',

@@ -9,7 +9,7 @@ Before you begin, ensure you have the following installed:
 - **Composer** (PHP dependency manager)
 - **Node.js & npm** (for frontend assets)
 - **MySQL** (Database server)
-- **API Docs** https://app.swaggerhub.com/apis/aounraza95organizati/TravelAgencyManager/1
+- **API Docs** https://app.swaggerhub.com/apis/aounraza95organizati/TravelAgencyManager/1.1
 
 ## Setup Steps
 
@@ -79,22 +79,11 @@ Run the migrations and seed the database with sample data (Travel Plans, Cities,
 php artisan migrate --seed
 ```
 
-#### E. Build Assets
-```bash
-npm run dev
-```
-
 ## Running the Application
 
 ### Start the Development Server
-You can start the Laravel development server and Vite together (using `concurrently`) with:
-```bash
-make dev
-# or
-npm run dev
-```
 
-Or start only the Laravel server:
+Laravel server:
 ```bash
 make serve
 # or
@@ -108,7 +97,6 @@ The API will be available at `http://localhost:8000/api/v1`.
 | Command | Description |
 | --- | --- |
 | `make setup` | Full project setup (deps, env, migrate, build) |
-| `make dev` | Run development server (Laravel + Vite) |
 | `make serve` | Start only the Laravel development server |
 | `make migrate` | Run database migrations |
 | `make seed` | Seed the database with sample data |

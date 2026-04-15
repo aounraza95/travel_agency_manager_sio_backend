@@ -13,7 +13,8 @@ class Destination extends Model
         'reviews', 
         'city_id', 
         'best_months', 
-        'is_active'
+        'is_active',
+        'travel_plan_id'
     ];
 
     protected $casts = [
@@ -30,5 +31,10 @@ class Destination extends Model
     public function city()
     {
         return $this->belongsTo(City::class);
+    }
+
+    public function travelPlan()
+    {
+        return $this->belongsTo(TravelPlan::class);
     }
 }

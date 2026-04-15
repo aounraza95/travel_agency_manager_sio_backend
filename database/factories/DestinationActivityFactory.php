@@ -2,7 +2,7 @@
 
 namespace Database\Factories;
 
-use App\Models\DestinationActivity;
+use App\Models\Destination;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**

@@ -11,7 +11,6 @@ class TravelPlan extends Model
     use SoftDeletes;
 
     protected $fillable = [
-        'activity_id',
         'city_id',
         'title',
         'description',
@@ -41,10 +40,5 @@ class TravelPlan extends Model
     public function destinations()
     {
         return $this->hasMany(Destination::class);
-    }
-
-    public function activity()
-    {
-        return $this->belongsTo(Activity::class);
     }
 }

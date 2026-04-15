@@ -23,7 +23,7 @@ class DestinationService
      */
     public function getDestinationById(TravelPlan $travelPlan): TravelPlanResource
     {
-        return new TravelPlanResource($travelPlan->load(['city', 'activity', 'touristSpots', 'destinations.activity']));
+        return new TravelPlanResource($travelPlan->load(['city', 'touristSpots', 'destinations.activity']));
     }
 
     /**
@@ -31,7 +31,20 @@ class DestinationService
      */
     public function createDestination(array $data): TravelPlanResource
     {
-        return new TravelPlanResource(TravelPlan::create($data));
+        $activityId = $data['activity_id'] ?? null;
+        unset($data['activity_id']);
+
+        $travelPlan = TravelPlan::create($data);
+
+        if ($activityId) {
+            $travelPlan->destinations()->create([
+                'activity_id' => $activityId,
+                'city_id' => $travelPlan->city_id,
+                'is_active' => true,
+            ]);
+        }
+
+        return new TravelPlanResource($travelPlan->load(['city', 'touristSpots', 'destinations.activity']));
     }
 
     /**
@@ -39,8 +52,25 @@ class DestinationService
      */
     public function updateDestination(TravelPlan $travelPlan, array $data): TravelPlanResource
     {
+        $activityId = $data['activity_id'] ?? null;
+        unset($data['activity_id']);
+
         $travelPlan->update($data);
-        return new TravelPlanResource($travelPlan);
+
+        if ($activityId) {
+            $destination = $travelPlan->destinations()->first();
+            if ($destination) {
+                $destination->update(['activity_id' => $activityId]);
+            } else {
+                $travelPlan->destinations()->create([
+                    'activity_id' => $activityId,
+                    'city_id' => $travelPlan->city_id,
+                    'is_active' => true,
+                ]);
+            }
+        }
+
+        return new TravelPlanResource($travelPlan->load(['city', 'touristSpots', 'destinations.activity']));
     }
 
     /**
@@ -57,12 +87,14 @@ class DestinationService
     public function searchDestinations(array $filters, int $perPage = 10): AnonymousResourceCollection
     {
         $plans = TravelPlan::query()
-            ->with(['destinations.activity', 'touristSpots', 'activity', 'city'])
+            ->with(['destinations.activity', 'touristSpots', 'city'])
             ->when(!empty($filters['plan_name']), function ($query) use ($filters) {
                 $query->where('title', 'LIKE', '%' . $filters['plan_name'] . '%');
             })
             ->when(!empty($filters['activity_id']), function ($query) use ($filters) {
-                $query->where('activity_id', $filters['activity_id']);
+                $query->whereHas('destinations', function ($q) use ($filters) {
+                    $q->where('activity_id', $filters['activity_id']);
+                });
             })
             ->when(!empty($filters['date_from']), function ($query) use ($filters) {
                 $query->where('day_from', '>=', $filters['date_from']);

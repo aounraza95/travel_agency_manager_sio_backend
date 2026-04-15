@@ -74,6 +74,11 @@ components:
           $ref: '#/components/schemas/City'
         activity:
           $ref: '#/components/schemas/Activity'
+          description: The primary activity (fetched from the first associated destination)
+        destinations:
+          type: array
+          items:
+            $ref: '#/components/schemas/DestinationActivity'
 
     Country:
       type: object
@@ -106,6 +111,28 @@ components:
           type: string
         code:
           type: string
+
+    DestinationActivity:
+      type: object
+      properties:
+        id:
+          type: integer
+        activity:
+          $ref: '#/components/schemas/Activity'
+        activity_cost:
+          type: number
+          nullable: true
+        reviews:
+          type: string
+          enum: ['1', '2', '3', '4', '5']
+          nullable: true
+        best_months:
+          type: array
+          items:
+            type: string
+          nullable: true
+        is_active:
+          type: boolean
 
 paths:
   /login:
