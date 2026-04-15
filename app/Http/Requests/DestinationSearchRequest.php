@@ -23,8 +23,11 @@ class DestinationSearchRequest extends FormRequest
     public function rules(): array
     {
         return [
+            'plan_name' => 'nullable|string|max:255',
             'city_id' => 'nullable|integer|exists:cities,id',
             'activity_id' => 'nullable|integer|exists:activities,id',
+            'budget_min' => 'nullable|numeric|min:0',
+            'budget_max' => 'nullable|numeric|min:0',
             'is_active' => 'nullable|boolean',
             'date_from' => 'nullable|date',
             'date_to' => 'nullable|date|after_or_equal:date_from',

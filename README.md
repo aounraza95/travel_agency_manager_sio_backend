@@ -9,6 +9,7 @@ Before you begin, ensure you have the following installed:
 - **Composer** (PHP dependency manager)
 - **Node.js & npm** (for frontend assets)
 - **MySQL** (Database server)
+- **API Docs** https://app.swaggerhub.com/apis/aounraza95organizati/TravelAgencyManager/1
 
 ## Setup Steps
 
@@ -20,15 +21,24 @@ cd travel_agency_api
 ```
 
 ### 2. Automated Setup (Recommended)
-The project includes a shortcut script that handles most of the configuration:
+
+#### Option A: Using Makefile
+If you have `make` installed, this is the quickest way to set up the project:
+```bash
+make setup
+```
+
+#### Option B: Using Composer
+If you don't have `make`, you can use the composer command:
 ```bash
 composer run setup
 ```
-This script will:
+
+Both options will:
 - Install PHP dependencies (`composer install`)
 - Create a `.env` file from `.env.example`
 - Generate the encryption key (`php artisan key:generate`)
-- Run database migrations
+- Run database migrations and seeders (`php artisan migrate --seed`)
 - Install Node dependencies (`npm install`)
 - Build the frontend assets (`npm run build`)
 
@@ -77,18 +87,35 @@ npm run dev
 ## Running the Application
 
 ### Start the Development Server
-You can start the Laravel development server and Vite together using:
+You can start the Laravel development server and Vite together (using `concurrently`) with:
 ```bash
+make dev
+# or
 npm run dev
 ```
+
 Or start only the Laravel server:
 ```bash
+make serve
+# or
 php artisan serve
 ```
 
 The API will be available at `http://localhost:8000/api/v1`.
 
-### API Authentication
+### Makefile Commands
+
+| Command | Description |
+| --- | --- |
+| `make setup` | Full project setup (deps, env, migrate, build) |
+| `make dev` | Run development server (Laravel + Vite) |
+| `make serve` | Start only the Laravel development server |
+| `make migrate` | Run database migrations |
+| `make seed` | Seed the database with sample data |
+| `make test` | Run PHPUnit tests |
+| `make clean` | Clear caches and remove logs |
+
+## API Authentication
 The project uses **Laravel Sanctum** for authentication. You can find authentication routes under `/api/v1/login` and `/api/v1/register`.
 
 ## Troubleshooting

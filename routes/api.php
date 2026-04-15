@@ -5,6 +5,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\V1\DestinationController;
 use App\Http\Controllers\Api\V1\ActivitiesController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\CountryController;
+use App\Http\Controllers\Api\V1\CityController;
 
 Route::prefix('v1')->group(function () {
     // Auth APIs
@@ -18,11 +20,17 @@ Route::prefix('v1')->group(function () {
         });
     });
 
-    // Destination APIS
     // Public routes
+    // Destination Apis
     Route::get('destination', [DestinationController::class, 'index']);
     Route::get('destination/search', [DestinationController::class, 'getDestinationWithRelations']);
     Route::get('destination/{travelPlan}', [DestinationController::class, 'show']);
+    
+    Route::get('countries', [CountryController::class, 'index']);
+    Route::get('countries/{country}', [CountryController::class, 'show']);
+
+    Route::get('cities', [CityController::class, 'index']);
+    Route::get('cities/{city}', [CityController::class, 'show']);
 
     // Admin routes
     Route::middleware(['auth:sanctum', 'admin'])->group(function () {
@@ -34,6 +42,9 @@ Route::prefix('v1')->group(function () {
         Route::post('activities', [ActivitiesController::class, 'store']);
         Route::put('activities/{activity}', [ActivitiesController::class, 'update']);
         Route::delete('activities/{activity}', [ActivitiesController::class, 'destroy']);
+
+        Route::apiResource('countries', CountryController::class)->except(['index', 'show']);
+        Route::apiResource('cities', CityController::class)->except(['index', 'show']);
     });
 
     // Activities Public routes

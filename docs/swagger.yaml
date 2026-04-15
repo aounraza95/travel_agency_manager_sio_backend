@@ -1,0 +1,541 @@
+openapi: 3.0.0
+info:
+  title: Travel Agency API
+  description: API for managing travel plans, destinations, cities, and activities.
+  version: 1.0.0
+servers:
+  - url: /api/v1
+    description: Primary API Server
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+  
+  schemas:
+    SuccessResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: success
+        message:
+          type: string
+          example: Request successful
+        data:
+          type: object
+
+    ErrorResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: error
+        message:
+          type: string
+          example: Something went wrong
+        errors:
+          type: object
+
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+          enum: [admin, user]
+
+    TravelPlan:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: number
+        date_from:
+          type: string
+          format: date
+        date_to:
+          type: string
+          format: date
+        is_active:
+          type: boolean
+        city:
+          $ref: '#/components/schemas/City'
+        activity:
+          $ref: '#/components/schemas/Activity'
+
+    Country:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        code:
+          type: string
+
+    City:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        code:
+          type: string
+        country:
+          $ref: '#/components/schemas/Country'
+
+    Activity:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        code:
+          type: string
+
+paths:
+  /login:
+    post:
+      summary: User Login
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /register:
+    post:
+      summary: User Registration
+      tags: [Auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                password:
+                  type: string
+                password_confirmation:
+                  type: string
+                role:
+                  type: string
+                  enum: [admin, user]
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /logout:
+    post:
+      summary: User Logout
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /user:
+    get:
+      summary: Get current authenticated user
+      tags: [Auth]
+      security:
+        - bearerAuth: []
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+
+  /destination:
+    get:
+      summary: List all travel plans
+      tags: [Destinations]
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SuccessResponse'
+    post:
+      summary: Create a travel plan
+      tags: [Destinations]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [city_id, title, price, day_from, day_to]
+              properties:
+                city_id: {type: integer}
+                activity_id: {type: integer}
+                title: {type: string}
+                description: {type: string}
+                price: {type: number}
+                day_from: {type: string, format: date}
+                day_to: {type: string, format: date}
+                is_active: {type: boolean}
+      responses:
+        201:
+          description: Created
+
+  /destination/search:
+    get:
+      summary: Search travel plans
+      tags: [Destinations]
+      parameters:
+        - name: plan_name
+          in: query
+          schema: {type: string}
+        - name: city_id
+          in: query
+          schema: {type: integer}
+        - name: activity_id
+          in: query
+          schema: {type: integer}
+        - name: budget_min
+          in: query
+          schema: {type: number}
+        - name: budget_max
+          in: query
+          schema: {type: number}
+        - name: date_from
+          in: query
+          schema: {type: string, format: date}
+        - name: date_to
+          in: query
+          schema: {type: string, format: date}
+        - name: per_page
+          in: query
+          schema: {type: integer}
+      responses:
+        200:
+          description: OK
+
+  /destination/{travelPlan}:
+    get:
+      summary: Get travel plan details
+      tags: [Destinations]
+      parameters:
+        - name: travelPlan
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Update travel plan
+      tags: [Destinations]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: travelPlan
+          in: path
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                city_id: {type: integer}
+                activity_id: {type: integer}
+                title: {type: string}
+                description: {type: string}
+                price: {type: number}
+                day_from: {type: string, format: date}
+                day_to: {type: string, format: date}
+                is_active: {type: boolean}
+      responses:
+        200:
+          description: OK
+    delete:
+      summary: Delete travel plan
+      tags: [Destinations]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: travelPlan
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        204:
+          description: No Content
+
+  /countries:
+    get:
+      summary: List countries
+      tags: [Countries]
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Create a country
+      tags: [Countries]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [country_name, country_code]
+              properties:
+                country_name: {type: string}
+                country_code: {type: string}
+      responses:
+        201:
+          description: Created
+
+  /countries/{country}:
+    get:
+      summary: Get country details
+      tags: [Countries]
+      parameters:
+        - name: country
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Update country
+      tags: [Countries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: country
+          in: path
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                country_name: {type: string}
+                country_code: {type: string}
+      responses:
+        200:
+          description: OK
+    delete:
+      summary: Delete country
+      tags: [Countries]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: country
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        204:
+          description: No Content
+
+  /cities:
+    get:
+      summary: List cities
+      tags: [Cities]
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Create a city
+      tags: [Cities]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [city_name, city_code, country_id]
+              properties:
+                city_name: {type: string}
+                city_code: {type: string}
+                country_id: {type: integer}
+      responses:
+        201:
+          description: Created
+
+  /cities/{city}:
+    get:
+      summary: Get city details
+      tags: [Cities]
+      parameters:
+        - name: city
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Update city
+      tags: [Cities]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: city
+          in: path
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                city_name: {type: string}
+                city_code: {type: string}
+                country_id: {type: integer}
+      responses:
+        200:
+          description: OK
+    delete:
+      summary: Delete city
+      tags: [Cities]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: city
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        204:
+          description: No Content
+
+  /activities:
+    get:
+      summary: List activities
+      tags: [Activities]
+      responses:
+        200:
+          description: OK
+    post:
+      summary: Create an activity
+      tags: [Activities]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [activity_name, activity_code, city_id]
+              properties:
+                activity_name: {type: string}
+                activity_code: {type: string}
+                city_id: {type: integer}
+      responses:
+        201:
+          description: Created
+
+  /activities/{activity}:
+    get:
+      summary: Get activity details
+      tags: [Activities]
+      parameters:
+        - name: activity
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Update activity
+      tags: [Activities]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: activity
+          in: path
+          required: true
+          schema: {type: integer}
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                activity_name: {type: string}
+                activity_code: {type: string}
+                city_id: {type: integer}
+      responses:
+        200:
+          description: OK
+    delete:
+      summary: Delete activity
+      tags: [Activities]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: activity
+          in: path
+          required: true
+          schema: {type: integer}
+      responses:
+        204:
+          description: No Content
