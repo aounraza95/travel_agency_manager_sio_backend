@@ -1,4 +1,19 @@
-# Installation Guide
+# Travel Agency Manager API
+
+## Things I considered while building this project API:
+- Services Layerd architecture (Separation of concerns)
+- Requests and response handling using Form Requests and API Resources
+- User roles using Auth (Admin, User) 
+- Decoupled frontend and backend for better scalability 
+- API Documentation using Swagger 
+
+## Further improvements:
+- Add global API Logger for better system logs visibility
+- Add roles and policies for better Auth management.
+- Add caching for better performance.
+- Add rate limiting for better security.
+- UI improvements
+
 
 Follow these steps to set up the Travel Agency API project on your local machine.
 
@@ -11,40 +26,58 @@ Before you begin, ensure you have the following installed:
 - **MySQL** (Database server)
 - **API Docs** https://app.swaggerhub.com/apis/aounraza95organizati/TravelAgencyManager/1.1
 
-## Setup Steps
 
-### 1. Clone the Repository
+
+## Setup Options
+
+You can set up the project using **Docker**.
+
+---
+
+## Option A: Docker Quick Start (Recommended)
+
+The easiest way to get both the backend and frontend running is using Docker.
+
+### Requirements
+Ensure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed.
+
+### Clone the Repository
 Clone the project to your local machine:
 ```bash
 git clone https://github.com/aounraza95/travel_agency_manager_sio_backend.git
 cd travel_agency_manager_sio_backend
 ```
 
-### 2. Automated Setup (Recommended)
+### Configure Environment
+Set `DB_HOST=db` and `DB_PASSWORD=root` in your `.env` file to match the Docker setup.
 
-#### Option A: Using Makefile
-If you have `make` installed, this is the quickest way to set up the project:
+### Setup the containers
+From the **backend** directory, run:
 ```bash
-make setup
+docker-compose up -d --build
 ```
+This will:
+- Initialize the **MySQL** database.
+- Start the **Laravel API** at [http://localhost:8000/api/v1](http://localhost:8000/api/v1).
+- Start the **Frontend** at [http://localhost:5173](http://localhost:5173).
+- Automatically run migrations and seeds (`migrate:fresh`).
 
-#### Option B: Using Composer
-If you don't have `make`, you can use the composer command:
+### Useful Docker Commands
 ```bash
-composer run setup
-```
+# Stop containers
+docker-compose down
 
-Both options will:
-- Install PHP dependencies (`composer install`)
-- Create a `.env` file from `.env.example`
-- Generate the encryption key (`php artisan key:generate`)
-- Run database migrations and seeders (`php artisan migrate --seed`)
-- Install Node dependencies (`npm install`)
-- Build the frontend assets (`npm run build`)
+# View logs
+docker-compose logs -f backend
+
+# Run artisan commands inside container
+docker-compose exec backend php artisan tinker
+```
 
 ---
 
-### 3. Manual Setup (Alternative)
+
+### Option B: Manual Setup (Alternative)
 If you prefer to perform each step manually:
 
 #### A. Install Dependencies
@@ -91,17 +124,6 @@ php artisan serve
 ```
 
 The API will be available at `http://localhost:8000/api/v1`.
-
-### Makefile Commands
-
-| Command | Description |
-| --- | --- |
-| `make setup` | Full project setup (deps, env, migrate, build) |
-| `make serve` | Start only the Laravel development server |
-| `make migrate` | Run database migrations |
-| `make seed` | Seed the database with sample data |
-| `make test` | Run PHPUnit tests |
-| `make clean` | Clear caches and remove logs |
 
 ## API Authentication
 The project uses **Laravel Sanctum** for authentication. You can find authentication routes under `/api/v1/login` and `/api/v1/register`.
