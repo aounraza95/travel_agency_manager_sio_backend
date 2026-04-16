@@ -41,11 +41,22 @@ The easiest way to get both the backend and frontend running is using Docker.
 ### Requirements
 Ensure you have [Docker](https://www.docker.com/) and [Docker Compose](https://docs.docker.com/compose/) installed.
 
-### Clone the Repository
+### Clone frontend Repository
+Clone the project to your local machine:
+```bash
+git clone https://github.com/aounraza95/travel_agency_manager_sio_frontend.git
+```
+
+### Clone backend Repository
 Clone the project to your local machine:
 ```bash
 git clone https://github.com/aounraza95/travel_agency_manager_sio_backend.git
 cd travel_agency_manager_sio_backend
+```
+
+### Copy configuration file
+```bash
+cp .env.example .env
 ```
 
 ### Configure Environment
